@@ -37,6 +37,8 @@ def search(soup):
     for link in soup.find_all('a'):
         href = link.get('href')
         if not href.startswith('http://'):
+            # TODO: Use ThreadPoolExecutor from concurrent.futures.
+            # See: https://docs.python.org/3/library/concurrent.futures.html#threadpoolexecutor.
             sync(href)
 
 

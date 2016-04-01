@@ -22,3 +22,11 @@ Start a notebook:
 ```
 $ jupyter notebook notebooks/probability.ipynb
 ```
+
+## New Notebooks
+
+Scrape new notebooks with the included script:
+
+```
+$ python scrape.py
+```

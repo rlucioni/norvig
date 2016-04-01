@@ -1,1 +1,4 @@
+beautifulsoup4==4.4.1
 jupyter==1.0.0
+python-slugify==1.2.0
+requests==2.9.1

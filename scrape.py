@@ -1,3 +1,4 @@
+from concurrent.futures import ThreadPoolExecutor
 import logging
 import os
 import time
@@ -18,7 +19,7 @@ extension = '.ipynb'
 
 
 def main():
-    logging.info('Retrieving notebooks from [%s].', readme)
+    logging.debug('Retrieving notebooks from [%s].', readme)
 
     soup = soupify(readme)
 
@@ -34,16 +35,15 @@ def soupify(url):
 
 
 def search(soup):
-    for link in soup.find_all('a'):
-        href = link.get('href')
-        if not href.startswith('http://'):
-            # TODO: Use ThreadPoolExecutor from concurrent.futures.
-            # See: https://docs.python.org/3/library/concurrent.futures.html#threadpoolexecutor.
-            sync(href)
+    with ThreadPoolExecutor() as executor:
+        for link in soup.find_all('a'):
+            href = link.get('href')
+            if not href.startswith('http://'):
+                executor.submit(sync, href)
 
 
 def sync(notebook):
-    logging.info('Syncing notebook [%s].', notebook)
+    logging.debug('Syncing notebook [%s].', notebook)
 
     slug = slugify(notebook.split(extension)[0])
     path = 'notebooks/{slug}{extension}'.format(slug=slug, extension=extension)
@@ -67,7 +67,7 @@ def save(notebook, path):
 
     end = now()
     elapsed = end - start
-    logging.info('Saved notebook [%s] to [%s] in [%.2f] seconds.', notebook, path, elapsed)
+    logging.debug('Saved notebook [%s] to [%s] in [%.2f] seconds.', notebook, path, elapsed)
 
 
 def now():
